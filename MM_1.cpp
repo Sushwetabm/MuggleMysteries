@@ -19,12 +19,21 @@ struct ReadingListNode {
     vector<Book> books;
 };
 
+// Folder Node
+struct FolderNode {
+    string folderName;
+    vector<string> readingLists; // Stores reading lists and sub-folders
+};
+
 // Book Database (Map)
 unordered_map<string, Book> bookDatabase;
 
 // Reading Lists (Graph)
 unordered_map<string, ReadingListNode> readingListGraph;
 unordered_map<string, vector<string>> adjacencyList;
+
+// Reading List Organization (Tree)
+FolderNode rootFolder; // The root of the folder tree
 
 // Function to add a book to the database
 void addBook(const string& title, const string& author, const string& genre, int pageCount) {
@@ -67,6 +76,27 @@ void displayAllReadingLists() {
     }
 }
 
+// Function to create a folder
+void createFolder(const string& folderName) {
+    FolderNode newFolder;
+    newFolder.folderName = folderName;
+    rootFolder.readingLists.push_back(folderName);
+}
+
+// Function to display all folders and reading lists in the tree
+void displayFolderTree(FolderNode& folderNode, int level = 0) {
+    for (const auto& item : folderNode.readingLists) {
+        if (item.find("Folder:") == 0) {
+            // Display folder
+            cout << string(level, '\t') << item.substr(7) << " (Folder)" << endl;
+            displayFolderTree(rootFolder, level + 1);
+        } else {
+            // Display reading list
+            cout << string(level, '\t') << item << endl;
+        }
+    }
+}
+
 // Function to delete a reading list
 void deleteReadingList(const string& listName) {
     if (readingListGraph.find(listName) != readingListGraph.end()) {
@@ -85,6 +115,25 @@ void deleteReadingList(const string& listName) {
     }
 }
 
+// Function to move a reading list to a folder
+void moveReadingListToFolder(const string& listName, const string& folderName) {
+    // Check if the folder exists
+    auto folderIt = find(rootFolder.readingLists.begin(), rootFolder.readingLists.end(), "Folder:" + folderName);
+    if (folderIt != rootFolder.readingLists.end()) {
+        // Check if the reading list exists
+        auto listIt = find(rootFolder.readingLists.begin(), rootFolder.readingLists.end(), listName);
+        if (listIt != rootFolder.readingLists.end()) {
+            // Move the reading list to the folder
+            rootFolder.readingLists.erase(listIt);
+            rootFolder.readingLists.push_back(folderName);
+            cout << "Reading List '" << listName << "' moved to folder '" << folderName << "'." << endl;
+        } else {
+            cout << "Reading List '" << listName << "' not found." << endl;
+        }
+    } else {
+        cout << "Folder '" << folderName << "' not found." << endl;
+    }
+}
 
 // Add more functions based on your requirements
 
@@ -99,8 +148,12 @@ int main() {
     displayBooksInReadingList("To Read");
     displayAllReadingLists();
 
-    deleteReadingList("To Read");
+    createFolder("Fantasy");
+    createFolder("Mystery");
+
+    displayFolderTree(rootFolder);
+
+    moveReadingListToFolder("To Read", "Fantasy");
 
     return 0;
 }
-
