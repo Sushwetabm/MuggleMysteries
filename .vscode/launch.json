@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "d:/SUSHWETA BRIEFCASE/Sush 1/JAYPEE/SEM 3/Sem3 programs/PROJECTS/New folder/MuggleMysteries",
+      "program": "d:/SUSHWETA BRIEFCASE/Sush 1/JAYPEE/SEM 3/Sem3 programs/PROJECTS/New folder/MuggleMysteries/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
