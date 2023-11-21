@@ -22,7 +22,7 @@ public:
     }
 };
 
-// Database class
+// Book Database class
 class Database {
 public:
     unordered_map<string, Book> books;
@@ -40,62 +40,73 @@ Book Database::getBook(string title)
     return books[title];
 }
 
-// Node class
+// Node class for k-ary tree
 class listNode {
 public:
     vector<Book> readingList;
-    listNode *left;
-    listNode *right;
+    vector<listNode *> children;
 
     listNode(vector<Book> readingList)
     {
         this->readingList = readingList;
-        left = NULL;
-        right = NULL;
     }
 };
 
-// Function prototypes
-listNode *insertList(listNode *root, vector<Book> newList);
+// ReadingList class for managing k-ary tree of reading lists
+class ReadingList {
+public:
+    listNode *root;
+    int k; // Degree of the k-ary tree
+
+    ReadingList(int k)
+    {
+        root = NULL;
+        this->k = k;
+    }
+
+    void addList(vector<Book> readingList);
+    void displayLists();
+    void removeBook(string title);
+    void reorderBooks(vector<string> newOrder);
+    // Additional functions for k-ary tree operations
+    void createFolder();
+    void moveListToFolder(listNode *list, listNode *folder);
+};
+
+// Function declarations for k-ary tree operations
+listNode *insertList(listNode *root, vector<Book> newList, int k);
 void inOrderTraversal(listNode *root);
 listNode *removeBookHelper(listNode *root, string title);
 listNode *reorderBooksHelper(listNode *root, vector<string> newOrder);
 
-// Reading List class
-class ReadingList {
-public:
-    listNode *root;
-
-    ReadingList()
-    {
-        root = NULL;
-    }
-
-    void addList(vector<Book> readingList)
-    {
-        root = insertList(root, readingList);
-    }
-
-    void displayLists()
-    {
-        inOrderTraversal(root);
-    }
-
-    void removeBook(string title);
-    void reorderBooks(vector<string> newOrder);
-};
-
-listNode *insertList(listNode *root, vector<Book> newList)
+// Function definitions for k-ary tree operations
+listNode *insertList(listNode *root, vector<Book> newList, int k)
 {
     if (root == NULL)
     {
         return new listNode(newList);
     }
 
-    // Implement logic to insert based on a specific condition (e.g., alphabetical order)
-    // You may use the book titles for comparison
-    // For simplicity, the new list is added to the right of the current node
-    root->right = insertList(root->right, newList);
+    // If the current node has less than k children, insert the new list as a child
+    if (root->children.size() < k)
+    {
+        root->children.push_back(new listNode(newList));
+    }
+    else
+    {
+        // Find the first child with fewer than k children and insert the new list there
+        for (auto &child : root->children)
+        {
+            if (child->children.size() < k)
+            {
+                child = insertList(child, newList, k);
+                return root;
+            }
+        }
+
+        // If all children have k children, create a new child and insert the new list
+        root->children.push_back(new listNode(newList));
+    }
 
     return root;
 }
@@ -111,14 +122,11 @@ void inOrderTraversal(listNode *root)
         cout << "Title: " << book.title << ", Author: " << book.author << ", Genre: " << book.genre << ", Page Count: " << book.pageCount << endl;
     }
 
-    // Traverse the left and right subtrees
-    inOrderTraversal(root->left);
-    inOrderTraversal(root->right);
-}
-
-void ReadingList::removeBook(string title)
-{
-    root = removeBookHelper(root, title);
+    // Traverse each child
+    for (auto child : root->children)
+    {
+        inOrderTraversal(child);
+    }
 }
 
 listNode *removeBookHelper(listNode *root, string title)
@@ -131,16 +139,18 @@ listNode *removeBookHelper(listNode *root, string title)
                                       [title](const Book &book) { return book.title == title; }),
                              root->readingList.end());
 
-    // Recur for the left and right subtrees
-    root->left = removeBookHelper(root->left, title);
-    root->right = removeBookHelper(root->right, title);
+    // Remove any child nodes that have become empty after the book removal
+    root->children.erase(remove_if(root->children.begin(), root->children.end(),
+                                   [](listNode *child) { return child->readingList.empty() && child->children.empty(); }),
+                         root->children.end());
+
+    // Recur for each remaining child
+    for (auto &child : root->children)
+    {
+        child = removeBookHelper(child, title);
+    }
 
     return root;
-}
-
-void ReadingList::reorderBooks(vector<string> newOrder)
-{
-    root = reorderBooksHelper(root, newOrder);
 }
 
 listNode *reorderBooksHelper(listNode *root, vector<string> newOrder)
@@ -165,18 +175,62 @@ listNode *reorderBooksHelper(listNode *root, vector<string> newOrder)
     // Replace the existing reading list with the reordered one
     root->readingList = reorderedList;
 
-    // Recur for the left and right subtrees
-    root->left = reorderBooksHelper(root->left, newOrder);
-    root->right = reorderBooksHelper(root->right, newOrder);
+    // Recur for each remaining child
+    for (auto &child : root->children)
+    {
+        child = reorderBooksHelper(child, newOrder);
+    }
 
     return root;
 }
+
+
+// Function definitions for ReadingList class
+void ReadingList::addList(vector<Book> readingList)
+{
+    root = insertList(root, readingList, k);
+}
+
+void ReadingList::displayLists()
+{
+    inOrderTraversal(root);
+}
+
+void ReadingList::removeBook(string title)
+{
+    root = removeBookHelper(root, title);
+}
+
+void ReadingList::reorderBooks(vector<string> newOrder)
+{
+    root = reorderBooksHelper(root, newOrder);
+}
+
+void ReadingList::createFolder()
+{
+    // Create a new list node as a folder
+    listNode *folder = new listNode(vector<Book>());
+    root->children.push_back(folder);
+}
+void ReadingList::moveListToFolder(listNode *list, listNode *folder)
+{
+    // Remove the list from its current position within its parent
+    auto it = find(root->children.begin(), root->children.end(), list);
+    if (it != root->children.end())
+    {
+        root->children.erase(it);
+
+        // Add the list to the specified folder
+        folder->children.push_back(list);
+    }
+}
+
 
 int main()
 {
     // Initialize your book database and reading list
     Database bookDB;
-    ReadingList readingLists;
+    ReadingList readingLists(3); // Create a k-ary tree with degree 3
 
     // Add books to the database
     Book book1("The Hobbit", "J.R.R. Tolkien", "Fantasy", 300);
@@ -204,6 +258,16 @@ int main()
     vector<string> newOrder = {"1984", "The Hobbit"};
     readingLists.reorderBooks(newOrder);
     cout << "\nReading List after reordering books:" << endl;
+    readingLists.displayLists();
+
+    // Create a folder and move the reading list to the folder
+    readingLists.createFolder();
+    cout << "\nReading List after creating a folder:" << endl;
+    readingLists.displayLists();
+
+    listNode *folder = readingLists.root->children[0];
+    readingLists.moveListToFolder(readingLists.root, folder);
+    cout << "\nReading List after moving to folder:" << endl;
     readingLists.displayLists();
 
     return 0;
