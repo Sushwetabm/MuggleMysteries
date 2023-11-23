@@ -90,7 +90,7 @@ void Database::displayByGenre()
         cout<<"7.Thriller"<<endl;
         cout<<"8.Classics"<<endl;
         cout<<"9.Poetry"<<endl;
-        cout<<"10.Autobiography"<<endl;
+        cout<<"10.Self Help"<<endl;
         cout<<"0.Exit menu"<<endl;
         cout<<"Enter choice: ";
         cin>>ch;
@@ -146,7 +146,7 @@ void Database::displayByGenre()
                 }
              case 10:
                 {
-                    searchBooksByGenre("Autobiography");
+                    searchBooksByGenre("Self Help");
                     break;
                 }
              default:
@@ -172,7 +172,7 @@ void Database::displayByAuthor()
         cout<<"7. Paula Hawkins"<<endl;
         cout<<"8. Jane Austen"<<endl;
         cout<<"9. Sylvia Path"<<endl;
-        cout<<"10. Leo Tolstoy"<<endl;
+        cout<<"10. Mark Manson"<<endl;
         cout<<"0.Exit menu"<<endl;
         cout<<"Enter choice: ";
         cin>>ch;
