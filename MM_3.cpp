@@ -12,13 +12,15 @@ public:
     string title;
     string author;
     string genre;
+    float rating;
     int pageCount;
     Book() {}
-    Book(string title, string author, string genre, int pageCount)
+    Book(string title, string author, string genre, float rating, int pageCount)
     {
         this->title = title;
         this->author = author;
         this->genre = genre;
+        this->rating = rating;
         this->pageCount = pageCount;
     }
 };
@@ -162,7 +164,7 @@ void Database::displayByAuthor()
     {
         cout<<"Chose the author whose book you want to explore:"<<endl;
         cout<<"1. Agatha Christie"<<endl;;
-        cout<<"2. Nora Roberts"<<endl;
+        cout<<"2. Ana Huang"<<endl;
         cout<<"3. Dan Brown"<<endl;
         cout<<"4. J K Rowling"<<endl;
         cout<<"5. Stephen King"<<endl;
@@ -266,10 +268,12 @@ public:
     void printLevelOrder(ReadingListNode* root);
     void addBookIntoRL(string bookName, string rl_name);
     void removeBookFromRL(string bookName, string rl_name);
+    void getReadingList(ReadingListNode*& root, string rl_name);
 
 };
 // Function to add new ReadingListName in level order
-void ReadingListTree :: insertReadingList(ReadingListNode*& root, string rl_name) {
+void ReadingListTree :: insertReadingList(ReadingListNode*& root, string rl_name)
+{
     ReadingListNode* temp = new ReadingListNode(rl_name); // Initialize with ReadingListName
     temp->ReadingListName = rl_name;
     temp->left = temp->right = NULL;
@@ -362,6 +366,30 @@ void ReadingListTree :: removeBookFromRL(string bookName, string rl_name)
         }
 }
 
+void ReadingListTree :: getReadingList(ReadingListNode*& root, string rl_name) {
+{
+    if (root == NULL) return;
+    queue<ReadingListNode*> q;
+    q.push(root);
+    while (!q.empty())
+        {
+        ReadingListNode* node = q.front();
+        if (node->ReadingListName == rl_name)
+        {
+            int n = node->bookNames.size();
+            for(int i = 0; i < n; i++)
+            {
+                cout << node->bookNames[i] << endl;
+            }
+            break;
+        }
+        q.pop();
+        if (node->left != NULL)
+            q.push(node->left);
+        if (node->right != NULL)
+            q.push(node->right);
+        }
+}
 int main()
 {
 
