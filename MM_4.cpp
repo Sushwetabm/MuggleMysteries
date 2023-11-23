@@ -313,7 +313,7 @@ void ReadingListTree :: printLevelOrder(ReadingListNode* root) {
     q.push(root);
     while (!q.empty()) {
         ReadingListNode* node = q.front();
-        cout << node->ReadingListName << " ";
+        cout << node->ReadingListName << endl;
         q.pop();
         if (node->left != NULL)
             q.push(node->left);
