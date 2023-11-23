@@ -87,10 +87,10 @@ void Database::displayByGenre()
         cout<<"4.Fantasy"<<endl;
         cout<<"5.Horror"<<endl;
         cout<<"6.Historical"<<endl;
-        cout<<"7.Thriller and Suspense"<<endl;
+        cout<<"7.Thriller"<<endl;
         cout<<"8.Classics"<<endl;
         cout<<"9.Poetry"<<endl;
-        cout<<"10.Autobiographies and Self Help"<<endl;
+        cout<<"10.Autobiography"<<endl;
         cout<<"0.Exit menu"<<endl;
         cout<<"Enter choice: ";
         cin>>ch;
@@ -131,7 +131,7 @@ void Database::displayByGenre()
                 }
             case 7:
                 {
-                    searchBooksByGenre("Thriller and Suspense");
+                    searchBooksByGenre("Thriller");
                     break;
                 }
             case 8:
@@ -146,7 +146,7 @@ void Database::displayByGenre()
                 }
              case 10:
                 {
-                    searchBooksByGenre("Autobiographies and Self Help");
+                    searchBooksByGenre("Autobiography");
                     break;
                 }
              default:
