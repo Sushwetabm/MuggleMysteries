@@ -268,6 +268,7 @@ public:
     void addBookIntoRL(int bookTag, string rl_name);
     void removeBookFromRL(int bookTag, string rl_name);
     void getReadingList(ReadingListNode*& root, string rl_name,const Database& bookDB);
+    bool isEmpty(ReadingListNode* root);
 
 };
 // Function to add new ReadingListName in level order
@@ -306,9 +307,24 @@ void ReadingListTree :: insertReadingList(ReadingListNode*& root, string rl_name
         }
 }
 
+bool ReadingListTree :: isEmpty(ReadingListNode* root)
+{
+    if (root == NULL)
+    {
+        return true;
+    }
+    return false;
+}
+
 // Function to print Level Order Traversal
-void ReadingListTree :: printLevelOrder(ReadingListNode* root) {
-    if (root == NULL) return;
+void ReadingListTree :: printLevelOrder(ReadingListNode* root)
+{
+    if (root == NULL)
+    {
+        cout<< "Oh my! No reading lists created yet" <<endl;
+        return;
+    }
+    cout << "Oh well, Your existing reading lists are:" << endl;
     queue<ReadingListNode*> q;
     q.push(root);
     while (!q.empty()) {
@@ -366,7 +382,11 @@ void ReadingListTree :: removeBookFromRL(int bookTag, string rl_name)
 }
 
 void ReadingListTree::getReadingList(ReadingListNode*& root, string rl_name, const Database& bookDB) {
-    if (root == NULL) return;
+    if (root == NULL)
+    {
+        cout<<"No book added yet!"<<endl;
+        return;
+    }
 
     queue<ReadingListNode*> q;
     q.push(root);
@@ -507,109 +527,109 @@ int main()
     bookDB.addBook(book47);
     bookDB.addBook(book48);
     int ch=0;
-    while(ch!=7)
+    while(ch!=8)
     {
-        cout<<"\nChoose what you want to do:"<<endl;
-        cout<<"1.Add to reading list."<<endl;
-        cout<<"2.Remove from list."<<endl;
-        cout<<"3.Display reading list."<<endl;
-        cout<<"4.Recommend book."<<endl;
-        cout<<"5.Display book information."<<endl;
-        cout<<"6.Create new reading list."<<endl;
-        cout<<"7.Clear the screen."<<endl;
-        cout<<"8.Exit"<<endl;
-        cout<<"Enter choice:";
+        cout<<"\nSo what's on your  mind? Just enter the option number :D :"<<endl;
+        cout<<endl;
+        cout<<"1.I want to create new reading list (U_U) "<<endl;
+        cout<<"2.I will add to an existing reading list (UwU)"<<endl;
+        cout<<"3.I want to remove a book from my reading list (X_X)"<<endl;
+        cout<<"4.Just show me my reading lists (>_<)"<<endl;
+        cout<<"5.Tell me about details of this book (:O) "<<endl;
+        cout<<"6.Recommend me a good book please (^_^)"<<endl;
+        cout<<"7.Too much information on the screen, clear it (+_+) "<<endl;
+        cout<<"8.Exit =( "<<endl;
+        cout<<endl;
+        cout<<"What do you wish to do? (^_~): ";
         cin>>ch;
+        cout<<endl;
         switch(ch)
         {
         case 1:
         {
+            cin.ignore();
             string rlname;
-            cout << "Your existing reading lists are:" << endl;
-            RLT.printLevelOrder(RLT.root);
-            cout << endl;
-            cout << "Enter name of reading list you want to add a book to:";
-            cin.ignore(); // Clear the newline character from the buffer
-            getline(cin, rlname);
-            int ch;
-            cout << "Show books by 1.Author 2.Genre :";
-            cin >> ch;
+            cout<<"What shall be the name for the new reading list? ";
+            getline(cin,rlname);
+            RLT.insertReadingList(RLT.root,rlname);
             cout<<endl;
-            cin.ignore(); // Clear the newline character from the buffer
-            if (ch == 1)
-            {
-                bookDB.displayByAuthor();
-                int bookTag;
-                cout << "Enter book tag of the book you want to add to your list: ";
-                cin>>bookTag;
-                RLT.addBookIntoRL(bookTag, rlname);
-            }
-            else if (ch == 2)
-            {
-                bookDB.displayByAuthor();
-                int bookTag;
-                cout << "Enter book tag of the book you want to add to your list: ";
-                cin>>bookTag;
-                RLT.addBookIntoRL(bookTag, rlname);
-            }
-            else
-                cout << "Invalid choice.";
             break;
         }
-
 
         case 2:
         {
-            cin.ignore();
-            cout<<"Your existing reading lists are:"<<endl;
-            RLT.printLevelOrder(RLT.root);
-            cout<<endl;
             string rlname;
-            cout<<"Enter which reading list you want to remove from:";
-            getline(cin,rlname);
-            cout<<"Here's your chosen reading list:"<<endl;
-            RLT.getReadingList(RLT.root,rlname,bookDB);
-            int bookTag;
-            cout<<"Enter which book you want to remove from your list:";
-            cin>>bookTag;
-            cout<<endl;
-            RLT.removeBookFromRL(bookTag,rlname);
+            RLT.printLevelOrder(RLT.root);
+            cout << endl;
+            if (!RLT.isEmpty(RLT.root))
+            {
+                cout << "What reading list you wish to add a book to? ";
+                cin.ignore(); // Clear the newline character from the buffer
+                getline(cin, rlname);
+                int ch;
+                cout << "Show books by 1.Author 2.Genre :";
+                cin >> ch;
+                cout<<endl;
+                cin.ignore(); // Clear the newline character from the buffer
+                if (ch == 1)
+                {
+                    bookDB.displayByAuthor();
+                    int bookTag;
+                    cout << "Please enter book tag of the book you want to add to your list: ";
+                    cin>>bookTag;
+                    RLT.addBookIntoRL(bookTag, rlname);
+                }
+                else if (ch == 2)
+                {
+                    bookDB.displayByAuthor();
+                    int bookTag;
+                    cout << "Please enter book tag of the book you want to add to your list: ";
+                    cin>>bookTag;
+                    RLT.addBookIntoRL(bookTag, rlname);
+                }
+                else
+                    cout << "Oh no! Invalid choice.";
+            }
             break;
         }
+
 
         case 3:
         {
             cin.ignore();
-            cout<<"Your existing reading lists are:"<<endl;
             RLT.printLevelOrder(RLT.root);
             cout<<endl;
-            string rlname;
-            cout<<"Enter which reading list you want to display:";
-            getline(cin,rlname);
-            cout<<endl;
-            cout<<"Here's your chosen reading list:"<<endl;
-            RLT.getReadingList(RLT.root,rlname,bookDB);
-            cout<<endl;
+            if (!RLT.isEmpty(RLT.root))
+            {
+                string rlname;
+                cout<<"Which reading list you wish to remove a book from? ";
+                getline(cin,rlname);
+                cout<<"Here's your chosen reading list:"<<endl;
+                RLT.getReadingList(RLT.root,rlname,bookDB);
+                int bookTag;
+                cout<<"Which book you wish to remove from your list? ";
+                cin>>bookTag;
+                cout<<endl;
+                RLT.removeBookFromRL(bookTag,rlname);
+            }
             break;
         }
 
         case 4:
         {
             cin.ignore();
-            int ch;
-            cout<<"Do you want recommendations based on 1.Author 2.Genre: ";
-            cin>>ch;
+            RLT.printLevelOrder(RLT.root);
             cout<<endl;
-            if(ch==1)
+            if (!RLT.isEmpty(RLT.root))
             {
-                bookDB.displayByAuthor();
+                string rlname;
+                cout<<"Which reading list you wish to display? ";
+                getline(cin,rlname);
+                cout<<endl;
+                cout<<"Here's your chosen reading list: "<<endl;
+                RLT.getReadingList(RLT.root,rlname,bookDB);
+                cout<<endl;
             }
-            else if(ch==2)
-            {
-                bookDB.displayByGenre();
-            }
-            else
-                cout<<"Invalid choice.";
             break;
         }
 
@@ -617,7 +637,7 @@ int main()
         {
             cin.ignore();
             int bookTag;
-            cout << "Enter book tag whose information is needed:";
+            cout << "Please enter book tag whose information is needed: ";
             cin >> bookTag;
             try {
                 const Book& book = bookDB.getBook(bookTag);
@@ -637,13 +657,23 @@ int main()
         case 6:
         {
             cin.ignore();
-            string rlname;
-            cout<<"Enter name of new reading list:";
-            getline(cin,rlname);
-            RLT.insertReadingList(RLT.root,rlname);
+            int ch;
+            cout<<"Do you want recommendations based on 1.Author 2.Genre: ";
+            cin>>ch;
             cout<<endl;
+            if(ch==1)
+            {
+                bookDB.displayByAuthor();
+            }
+            else if(ch==2)
+            {
+                bookDB.displayByGenre();
+            }
+            else
+                cout<<"Oh no! Invalid choice.";
             break;
         }
+
         case 7:
             {
                 system("cls");
@@ -651,10 +681,10 @@ int main()
                 break;
             }
         case 8:
-            break;
+            exit(0);
 
         default:
-            cout<<"Please enter a valid number";
+            cout<<"Wrong choice entered, please enter a valid number";
             break;
         }
     }
